@@ -43,7 +43,7 @@
     
     <style>
         /* ============================================================
-           الخطوط والأساسيات
+           جميع التنسيقات كما هي (لم تتغير)
            ============================================================ */
         * { box-sizing: border-box; }
         
@@ -787,7 +787,8 @@
             isLoading = false;
             showToast(`✅ تم تحميل ${rawData.length} عميل`, 'success');
             
-            await loadProgressFromFirebase();
+            // ✅ تحميل التقدم والاستماع للتغييرات في الوقت الفعلي
+            loadProgressFromFirebase();
             
             render();
             renderCountryFilters();
@@ -814,8 +815,9 @@
     }
 
     // ============================================================
-    // 3. دوال Firebase
+    // 3. دوال Firebase (مع التحديث التلقائي)
     // ============================================================
+    
     function saveProgressToFirebase() {
         if (!firebaseReady) return;
         database.ref('progress').set(sentState)
@@ -823,25 +825,42 @@
             .catch(err => console.error('❌ خطأ في حفظ Firebase:', err));
     }
 
+    // ✅ دالة المزامنة التلقائية (تستمع للتغييرات في الوقت الفعلي)
     function loadProgressFromFirebase() {
-        return new Promise((resolve) => {
-            database.ref('progress').once('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    Object.keys(data).forEach(key => {
-                        if (data[key] === true && !sentState[key]) {
-                            sentState[key] = true;
-                        }
-                    });
+        // ✅ استخدام on() بدلاً من once() للاستماع للتغييرات في الوقت الفعلي
+        database.ref('progress').on('value', (snapshot) => {
+            const data = snapshot.val();
+            console.log('📥 تحديث فوري من Firebase:', data);
+            
+            if (data) {
+                let hasChanges = false;
+                Object.keys(data).forEach(key => {
+                    // إذا كانت الحالة في Firebase مختلفة عن الحالة المحلية
+                    if (data[key] === true && !sentState[key]) {
+                        sentState[key] = true;
+                        hasChanges = true;
+                    } else if (data[key] === false && sentState[key] === true) {
+                        sentState[key] = false;
+                        hasChanges = true;
+                    }
+                });
+                
+                if (hasChanges) {
                     saveSentState();
                     render();
+                    showToast('🔄 تم تحديث التقدم تلقائياً من جهاز آخر', 'info');
                 }
-                firebaseReady = true;
-                resolve();
-            });
+            }
+            firebaseReady = true;
+            updateFirebaseStatus(true);
+            
+        }, (error) => {
+            console.error('❌ خطأ في الاستماع للتغييرات:', error);
+            updateFirebaseStatus(false);
         });
     }
 
+    // دالة المزامنة اليدوية (للاحتياط)
     function syncWithFirebase() {
         if (isSyncing) return;
         isSyncing = true;
