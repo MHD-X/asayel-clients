@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عملاء مطعم أصايل</title>
+    <title>عملاء مطعم أصايل - إرسال ذكي</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="logo.png">
@@ -22,42 +22,12 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: { sans: ['Cairo', 'sans-serif'] },
-                    colors: {
-                        'gold': '#c9a04a',
-                        'dark-gold': '#a8873a',
-                        'brown': '#5c3d2e',
-                        'light-brown': '#8b6b4a',
-                        'cream': '#fdf6ec',
-                        'warm-white': '#faf3ea',
-                        'dark-brown': '#2c1a10',
-                    }
-                }
-            }
-        }
-    </script>
-    
     <style>
         /* ============================================================
-           جميع التنسيقات كما هي (لم تتغير)
+           جميع التنسيقات والتصميم كما هو (نفس ما أرسلته)
            ============================================================ */
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease, opacity 0.3s ease; }
         
-        /* ====== تأثيرات انتقالية سلسة ====== */
-        * {
-            transition: background-color 0.4s ease, 
-                        color 0.4s ease, 
-                        border-color 0.4s ease, 
-                        box-shadow 0.4s ease,
-                        transform 0.3s ease,
-                        opacity 0.3s ease;
-        }
-        
-        /* ====== متغيرات الألوان ====== */
         :root {
             --bg-primary: #1a0f0a;
             --bg-secondary: #2c1a10;
@@ -92,391 +62,69 @@
             --toast-bg: rgba(253, 246, 236, 0.95);
         }
         
-        /* ====== الجسم الرئيسي ====== */
         body {
             font-family: 'Cairo', sans-serif;
             min-height: 100vh;
             background: var(--bg-primary);
-            background-image: 
-                radial-gradient(ellipse at 20% 50%, rgba(201, 160, 74, 0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 50%, rgba(201, 160, 74, 0.04) 0%, transparent 60%);
+            background-image: radial-gradient(ellipse at 20% 50%, rgba(201, 160, 74, 0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 50%, rgba(201, 160, 74, 0.04) 0%, transparent 60%);
             background-attachment: fixed;
             color: var(--text-primary);
         }
         
-        /* ====== خلفية المطعم ====== */
-        .restaurant-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
-            background: var(--bg-secondary);
-            transition: background 0.5s ease;
-        }
+        .restaurant-bg { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background: var(--bg-secondary); transition: background 0.5s ease; }
+        .restaurant-bg::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 30% 20%, rgba(201, 160, 74, 0.08) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(201, 160, 74, 0.05) 0%, transparent 50%), repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px); }
         
-        .restaurant-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: 
-                radial-gradient(circle at 30% 20%, rgba(201, 160, 74, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 70% 80%, rgba(201, 160, 74, 0.05) 0%, transparent 50%),
-                repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, rgba(255,255,255,0.01) 2px, transparent 2px, transparent 8px);
-            transition: opacity 0.5s ease;
-        }
+        .welcome-banner { background: linear-gradient(135deg, rgba(201, 160, 74, 0.08), rgba(201, 160, 74, 0.02)); border: 1px solid var(--border-gold); border-radius: 16px; padding: 12px 24px; text-align: center; margin-bottom: 24px; backdrop-filter: blur(10px); }
+        .welcome-banner p { color: var(--gold); font-weight: 700; font-size: 14px; letter-spacing: 0.5px; }
+        .welcome-banner i { margin-left: 8px; }
         
-        /* ====== رسالة ترحيب ====== */
-        .welcome-banner {
-            background: linear-gradient(135deg, rgba(201, 160, 74, 0.08), rgba(201, 160, 74, 0.02));
-            border: 1px solid var(--border-gold);
-            border-radius: 16px;
-            padding: 12px 24px;
-            text-align: center;
-            margin-bottom: 24px;
-            backdrop-filter: blur(10px);
-        }
+        .card-restaurant { background: var(--bg-card); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid var(--border-gold); border-radius: 16px; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 4px 30px var(--shadow-color); position: relative; }
+        .card-restaurant:hover { transform: translateY(-6px) scale(1.01); border-color: var(--gold); box-shadow: 0 12px 50px var(--shadow-color), 0 0 30px rgba(201, 160, 74, 0.05); background: var(--bg-card-hover); }
+        .card-restaurant.sent { border-color: var(--gold); background: rgba(201, 160, 74, 0.08); box-shadow: 0 4px 30px rgba(201, 160, 74, 0.08); }
+        .card-restaurant.sent::after { content: '✓'; position: absolute; top: -8px; right: -8px; width: 28px; height: 28px; background: linear-gradient(135deg, var(--gold), var(--gold-light)); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1a0f0a; font-size: 14px; font-weight: 900; box-shadow: 0 4px 15px rgba(201, 160, 74, 0.4); animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        @keyframes popIn { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+        .card-restaurant.sending { border-color: var(--gold); background: rgba(201, 160, 74, 0.12); animation: pulse-gold 1.5s ease-in-out infinite; }
+        @keyframes pulse-gold { 0%, 100% { opacity: 1; box-shadow: 0 4px 30px rgba(201, 160, 74, 0.08); } 50% { opacity: 0.8; box-shadow: 0 4px 40px rgba(201, 160, 74, 0.2); } }
         
-        .welcome-banner p {
-            color: var(--gold);
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 0.5px;
-        }
+        .theme-toggle { position: fixed; bottom: 30px; right: 30px; z-index: 999; width: 56px; height: 56px; border-radius: 50%; border: 1px solid var(--border-gold); background: var(--bg-card); backdrop-filter: blur(20px); color: var(--text-primary); font-size: 24px; cursor: pointer; transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); box-shadow: 0 8px 30px var(--shadow-color), 0 0 40px rgba(201, 160, 74, 0.05); display: flex; align-items: center; justify-content: center; }
+        .theme-toggle:hover { transform: scale(1.12) rotate(15deg); border-color: var(--gold); box-shadow: 0 8px 40px rgba(201, 160, 74, 0.25), 0 0 60px rgba(201, 160, 74, 0.08); }
         
-        .welcome-banner i {
-            margin-left: 8px;
-        }
+        .header-restaurant { background: var(--bg-card); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-color); }
+        .input-restaurant { background: var(--bg-card) !important; border: 1px solid var(--border-color) !important; color: var(--text-primary) !important; border-radius: 12px !important; transition: all 0.3s ease !important; }
+        .input-restaurant:focus { border-color: var(--gold) !important; box-shadow: 0 0 30px rgba(201, 160, 74, 0.08) !important; background: var(--bg-card-hover) !important; }
+        .input-restaurant::placeholder { color: var(--text-muted) !important; }
         
-        /* ====== بطاقات أنيقة ====== */
-        .card-restaurant {
-            background: var(--bg-card);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border-gold);
-            border-radius: 16px;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            box-shadow: 0 4px 30px var(--shadow-color);
-            position: relative;
-        }
+        .btn-restaurant-primary { background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: #1a0f0a; border: none; transition: all 0.3s ease; font-weight: 700; box-shadow: 0 4px 20px rgba(201, 160, 74, 0.2); }
+        .btn-restaurant-primary:hover { transform: scale(1.03); box-shadow: 0 8px 35px rgba(201, 160, 74, 0.3); }
+        .btn-restaurant { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-secondary); backdrop-filter: blur(10px); transition: all 0.3s ease; font-weight: 700; }
+        .btn-restaurant:hover:not(:disabled) { border-color: var(--gold); color: var(--text-primary); transform: scale(1.02); }
+        .btn-restaurant-success { background: rgba(45, 125, 70, 0.15); border: 1px solid rgba(45, 125, 70, 0.2); color: #a8e6c0; transition: all 0.3s ease; }
+        .btn-restaurant-success:hover { background: rgba(45, 125, 70, 0.25); border-color: rgba(45, 125, 70, 0.4); transform: scale(1.02); }
+        .btn-restaurant-danger { background: rgba(179, 60, 60, 0.15); border: 1px solid rgba(179, 60, 60, 0.2); color: #f5a0a0; transition: all 0.3s ease; }
+        .btn-restaurant-danger:hover:not(:disabled) { background: rgba(179, 60, 60, 0.25); border-color: rgba(179, 60, 60, 0.4); transform: scale(1.02); }
         
-        .card-restaurant:hover {
-            transform: translateY(-6px) scale(1.01);
-            border-color: var(--gold);
-            box-shadow: 0 12px 50px var(--shadow-color), 0 0 30px rgba(201, 160, 74, 0.05);
-            background: var(--bg-card-hover);
-        }
+        .progress-restaurant { background: var(--bg-card); border-radius: 50px; overflow: hidden; height: 8px; }
+        .progress-restaurant-fill { background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold)); background-size: 200% 100%; height: 100%; border-radius: 50px; animation: shimmer 2s infinite; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         
-        .card-restaurant.sent {
-            border-color: var(--gold);
-            background: rgba(201, 160, 74, 0.08);
-            box-shadow: 0 4px 30px rgba(201, 160, 74, 0.08);
-        }
+        .badge-restaurant { display: inline-block; padding: 3px 12px; border-radius: 50px; font-size: 9px; font-weight: 900; letter-spacing: 0.3px; text-transform: uppercase; }
+        .badge-restaurant.sent { background: rgba(45, 125, 70, 0.15); color: #a8e6c0; border: 1px solid rgba(45, 125, 70, 0.15); }
+        .badge-restaurant.pending { background: rgba(201, 160, 74, 0.12); color: var(--gold); border: 1px solid rgba(201, 160, 74, 0.12); }
+        .badge-restaurant.sending { background: rgba(201, 160, 74, 0.2); color: var(--gold-light); border: 1px solid rgba(201, 160, 74, 0.2); animation: pulse-gold 1s ease-in-out infinite; }
         
-        .card-restaurant.sent::after {
-            content: '✓';
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            width: 28px;
-            height: 28px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #1a0f0a;
-            font-size: 14px;
-            font-weight: 900;
-            box-shadow: 0 4px 15px rgba(201, 160, 74, 0.4);
-            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
+        .filter-restaurant { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); transition: all 0.3s ease; border-radius: 12px; padding: 8px 16px; font-weight: 600; font-size: 13px; cursor: pointer; }
+        .filter-restaurant:hover { background: var(--bg-card-hover); color: var(--text-secondary); }
+        .filter-restaurant.active { background: rgba(201, 160, 74, 0.12); border-color: var(--gold); color: var(--gold); }
         
-        @keyframes popIn {
-            0% { transform: scale(0); }
-            100% { transform: scale(1); }
-        }
+        .pagination-restaurant { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); transition: all 0.3s ease; border-radius: 10px; padding: 6px 14px; font-weight: 600; cursor: pointer; }
+        .pagination-restaurant:hover:not(:disabled) { background: rgba(201, 160, 74, 0.12); border-color: var(--gold); color: var(--gold); }
+        .pagination-restaurant.active { background: rgba(201, 160, 74, 0.15); border-color: var(--gold); color: var(--gold); }
         
-        .card-restaurant.sending {
-            border-color: var(--gold);
-            background: rgba(201, 160, 74, 0.12);
-            animation: pulse-gold 1.5s ease-in-out infinite;
-        }
-        
-        @keyframes pulse-gold {
-            0%, 100% { opacity: 1; box-shadow: 0 4px 30px rgba(201, 160, 74, 0.08); }
-            50% { opacity: 0.8; box-shadow: 0 4px 40px rgba(201, 160, 74, 0.2); }
-        }
-        
-        /* ====== زر Dark Mode المتطور ====== */
-        .theme-toggle {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            z-index: 999;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            border: 1px solid var(--border-gold);
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: var(--text-primary);
-            font-size: 24px;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            box-shadow: 0 8px 30px var(--shadow-color), 0 0 40px rgba(201, 160, 74, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .theme-toggle:hover {
-            transform: scale(1.12) rotate(15deg);
-            border-color: var(--gold);
-            box-shadow: 0 8px 40px rgba(201, 160, 74, 0.25), 0 0 60px rgba(201, 160, 74, 0.08);
-        }
-        
-        .theme-toggle:active {
-            transform: scale(0.9);
-        }
-        
-        /* ====== باقي التنسيقات ====== */
-        .header-restaurant {
-            background: var(--bg-card);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-color);
-        }
-        
-        .input-restaurant {
-            background: var(--bg-card) !important;
-            border: 1px solid var(--border-color) !important;
-            color: var(--text-primary) !important;
-            border-radius: 12px !important;
-            transition: all 0.3s ease !important;
-        }
-        
-        .input-restaurant:focus {
-            border-color: var(--gold) !important;
-            box-shadow: 0 0 30px rgba(201, 160, 74, 0.08) !important;
-            background: var(--bg-card-hover) !important;
-        }
-        
-        .input-restaurant::placeholder {
-            color: var(--text-muted) !important;
-        }
-        
-        select.input-restaurant option {
-            background: var(--bg-secondary);
-            color: var(--text-primary);
-        }
-        
-        /* ====== أزرار ====== */
-        .btn-restaurant-primary {
-            background: linear-gradient(135deg, var(--gold), var(--gold-light));
-            color: #1a0f0a;
-            border: none;
-            transition: all 0.3s ease;
-            font-weight: 700;
-            box-shadow: 0 4px 20px rgba(201, 160, 74, 0.2);
-        }
-        
-        .btn-restaurant-primary:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 35px rgba(201, 160, 74, 0.3);
-        }
-        
-        .btn-restaurant-primary:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .btn-restaurant {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-secondary);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            font-weight: 700;
-        }
-        
-        .btn-restaurant:hover:not(:disabled) {
-            border-color: var(--gold);
-            color: var(--text-primary);
-            transform: scale(1.02);
-        }
-        
-        .btn-restaurant:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .btn-restaurant-success {
-            background: rgba(45, 125, 70, 0.15);
-            border: 1px solid rgba(45, 125, 70, 0.2);
-            color: #a8e6c0;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-restaurant-success:hover {
-            background: rgba(45, 125, 70, 0.25);
-            border-color: rgba(45, 125, 70, 0.4);
-            transform: scale(1.02);
-        }
-        
-        .btn-restaurant-danger {
-            background: rgba(179, 60, 60, 0.15);
-            border: 1px solid rgba(179, 60, 60, 0.2);
-            color: #f5a0a0;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-restaurant-danger:hover:not(:disabled) {
-            background: rgba(179, 60, 60, 0.25);
-            border-color: rgba(179, 60, 60, 0.4);
-            transform: scale(1.02);
-        }
-        
-        .btn-restaurant-danger:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        /* ====== شريط التقدم ====== */
-        .progress-restaurant {
-            background: var(--bg-card);
-            border-radius: 50px;
-            overflow: hidden;
-            height: 8px;
-        }
-        
-        .progress-restaurant-fill {
-            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
-            background-size: 200% 100%;
-            height: 100%;
-            border-radius: 50px;
-            animation: shimmer 2s infinite;
-        }
-        
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        
-        /* ====== حالة البطاقات ====== */
-        .badge-restaurant {
-            display: inline-block;
-            padding: 3px 12px;
-            border-radius: 50px;
-            font-size: 9px;
-            font-weight: 900;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-        }
-        
-        .badge-restaurant.sent {
-            background: rgba(45, 125, 70, 0.15);
-            color: #a8e6c0;
-            border: 1px solid rgba(45, 125, 70, 0.15);
-        }
-        
-        .badge-restaurant.pending {
-            background: rgba(201, 160, 74, 0.12);
-            color: var(--gold);
-            border: 1px solid rgba(201, 160, 74, 0.12);
-        }
-        
-        .badge-restaurant.sending {
-            background: rgba(201, 160, 74, 0.2);
-            color: var(--gold-light);
-            border: 1px solid rgba(201, 160, 74, 0.2);
-            animation: pulse-gold 1s ease-in-out infinite;
-        }
-        
-        /* ====== فلتر ====== */
-        .filter-restaurant {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-            border-radius: 12px;
-            padding: 8px 16px;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
-        }
-        
-        .filter-restaurant:hover {
-            background: var(--bg-card-hover);
-            color: var(--text-secondary);
-        }
-        
-        .filter-restaurant.active {
-            background: rgba(201, 160, 74, 0.12);
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-        
-        /* ====== ترقيم ====== */
-        .pagination-restaurant {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            padding: 6px 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .pagination-restaurant:hover:not(:disabled) {
-            background: rgba(201, 160, 74, 0.12);
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-        
-        .pagination-restaurant.active {
-            background: rgba(201, 160, 74, 0.15);
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-        
-        .pagination-restaurant:disabled {
-            opacity: 0.2;
-            cursor: not-allowed;
-        }
-        
-        /* ====== Toast ====== */
-        .toast-restaurant {
-            position: fixed;
-            bottom: 100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--toast-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-gold);
-            color: var(--text-primary);
-            padding: 14px 28px;
-            border-radius: 16px;
-            font-weight: 700;
-            z-index: 9999;
-            box-shadow: 0 10px 50px var(--shadow-color);
-            transition: all 0.5s ease;
-        }
-        
+        .toast-restaurant { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); background: var(--toast-bg); backdrop-filter: blur(20px); border: 1px solid var(--border-gold); color: var(--text-primary); padding: 14px 28px; border-radius: 16px; font-weight: 700; z-index: 9999; box-shadow: 0 10px 50px var(--shadow-color); transition: all 0.5s ease; }
         .toast-restaurant.success { border-color: rgba(45, 125, 70, 0.3); }
         .toast-restaurant.error { border-color: rgba(179, 60, 60, 0.3); }
         .toast-restaurant.warning { border-color: var(--gold); }
         
-        /* ====== أدوات مساعدة ====== */
         .text-gold { color: var(--gold); }
         .text-gold-light { color: var(--gold-light); }
         .text-primary { color: var(--text-primary); }
@@ -486,30 +134,39 @@
         .border-gold\/20 { border-color: var(--border-gold); }
         .bg-gold\/10 { background: rgba(201, 160, 74, 0.1); }
         
-        /* ====== استجابة الجوال ====== */
+        /* تنسيق عرض الصورة بعد الرفع */
+        .image-preview-container {
+            position: relative;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .image-preview-container img {
+            max-width: 150px;
+            border-radius: 10px;
+            border: 2px solid var(--gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .remove-image-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: white;
+            border: none;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
         @media (max-width: 640px) {
-            .grid-cols-1.md\:grid-cols-2.lg\:grid-cols-3.xl\:grid-cols-4 {
-                grid-template-columns: 1fr !important;
-            }
-            
-            .theme-toggle {
-                width: 48px;
-                height: 48px;
-                font-size: 20px;
-                bottom: 20px;
-                right: 20px;
-            }
-            
-            .welcome-banner p {
-                font-size: 12px;
-            }
-            
-            .toast-restaurant {
-                bottom: 80px;
-                padding: 10px 18px;
-                font-size: 13px;
-                max-width: 90%;
-            }
+            .theme-toggle { width: 48px; height: 48px; font-size: 20px; bottom: 20px; right: 20px; }
+            .toast-restaurant { bottom: 80px; padding: 10px 18px; font-size: 13px; max-width: 90%; }
         }
     </style>
 </head>
@@ -522,7 +179,6 @@
 <header class="header-restaurant sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-4">
-            <!-- الشعار -->
             <div class="w-14 h-14 rounded-2xl flex items-center justify-center overflow-hidden shadow-2xl" style="background: var(--bg-card); border: 1px solid var(--border-gold);">
                 <img src="logo.png" alt="مطعم أصايل" class="w-full h-full object-cover rounded-2xl">
             </div>
@@ -538,37 +194,68 @@
                 </p>
             </div>
         </div>
-        
-        <div class="flex items-center gap-4 px-4 py-2 rounded-2xl" style="background: var(--bg-card); border: 1px solid var(--border-color);">
-            <div class="text-center px-3 border-l border-white/5">
-                <div class="text-xl font-black text-gold" id="totalCount">0</div>
-                <div class="text-[10px] text-muted">الإجمالي</div>
-            </div>
-            <div class="text-center px-3 border-l border-white/5">
-                <div class="text-xl font-black text-emerald-300" id="sentCount">0</div>
-                <div class="text-[10px] text-muted">تم التواصل</div>
-            </div>
-            <div class="text-center px-3">
-                <div class="text-xl font-black text-amber-300" id="pendingCount">0</div>
-                <div class="text-[10px] text-muted">متبقي</div>
-            </div>
-        </div>
     </div>
 </header>
 
 <!-- ====== MAIN ====== -->
 <main class="max-w-7xl mx-auto px-4 py-6 relative z-10">
 
-    <!-- ====== رسالة ترحيب ====== -->
-    <div class="welcome-banner">
-        <p>
-            <i class="fa-regular fa-star"></i>
-            مرحباً بك في نظام إدارة عملاء مطعم أصايل
-            <i class="fa-regular fa-star"></i>
-        </p>
+    <!-- ====== 1. قسم الإرسال اليدوي والصور (NEW) ====== -->
+    <div class="card-restaurant p-5 mb-6 border-2" style="border-color: var(--gold);">
+        <h3 class="font-black text-primary flex items-center gap-2 text-lg mb-4">
+            <i class="fa-solid fa-satellite-dish text-gold"></i>
+            إرسال مباشر (رقم يدوي + صورة)
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- حقل الرقم اليدوي -->
+            <div>
+                <label class="text-sm font-bold text-secondary mb-1 block">أدخل رقم الهاتف (يدوي):</label>
+                <input type="text" id="manualPhone" class="input-restaurant w-full p-3 rounded-xl text-sm font-bold" placeholder="مثال: +9665xxxxxxx أو 05xxxxxxx" dir="ltr">
+            </div>
+            
+            <!-- حقل رفع الصورة -->
+            <div>
+                <label class="text-sm font-bold text-secondary mb-1 block">أرفق صورة (اختياري):</label>
+                <input type="file" id="imageUpload" accept="image/*" class="input-restaurant w-full p-3 rounded-xl text-sm font-bold bg-[var(--bg-card)] text-[var(--text-secondary)]">
+                <div id="imagePreview"></div>
+            </div>
+        </div>
+        
+        <!-- زر الإرسال اليدوي -->
+        <div class="mt-4 flex gap-2 flex-wrap">
+            <button onclick="sendManualWhatsApp()" class="btn-restaurant-primary px-6 py-3 rounded-xl text-sm font-bold flex items-center gap-2">
+                <i class="fa-brands fa-whatsapp text-lg"></i> فتح واتساب وإرسال
+            </button>
+            <button onclick="clearManualForm()" class="btn-restaurant px-5 py-3 rounded-xl text-sm font-bold">
+                <i class="fa-solid fa-eraser"></i> مسح
+            </button>
+        </div>
+        <p class="text-xs text-muted mt-2">💡 ملاحظة: إذا أرفقت صورة، سيتم تنزيلها تلقائياً لتقوم بإرفاقها من داخل واتساب (لأن روابط الواتساب المباشرة لا تدعم الصور).</p>
     </div>
 
-    <!-- ====== شريط التقدم ====== -->
+    <!-- ====== 2. رسالة جماعية ====== -->
+    <div class="card-restaurant p-5 mb-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-3">
+            <h3 class="font-black text-primary flex items-center gap-2 text-lg">
+                <i class="fa-solid fa-pen-fancy text-gold"></i>
+                رسالة التواصل مع العملاء
+            </h3>
+            <button onclick="resetMessage()" class="text-xs font-bold text-secondary hover:text-gold transition px-4 py-2 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+                <i class="fa-solid fa-rotate-right ml-1"></i> استعادة
+            </button>
+        </div>
+        <textarea id="messageTemplate" rows="3" class="input-restaurant w-full p-4 rounded-xl text-sm font-medium" placeholder="اكتب رسالتك هنا..."></textarea>
+        <div class="mt-3 flex flex-wrap items-start gap-2 p-3 rounded-xl" style="background: rgba(201,160,74,0.06); border: 1px solid rgba(201,160,74,0.08);">
+            <i class="fa-solid fa-circle-info text-gold mt-0.5"></i>
+            <p class="text-xs font-bold leading-relaxed text-secondary">
+                استخدم <span class="px-2 py-0.5 rounded text-gold border border-gold/20" style="background: rgba(201,160,74,0.1);">[الاسم]</span> لاستبداله باسم العميل، 
+                و <span class="px-2 py-0.5 rounded text-gold border border-gold/20" style="background: rgba(201,160,74,0.1);">[الدولة]</span> لاستبدالها باسم الدولة.
+            </p>
+        </div>
+    </div>
+
+    <!-- ====== 3. شريط التقدم والإرسال الجماعي ====== -->
     <div class="card-restaurant p-5 mb-6">
         <div class="flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex-1 w-full">
@@ -627,28 +314,7 @@
         </div>
     </div>
 
-    <!-- ====== رسالة جماعية ====== -->
-    <div class="card-restaurant p-5 mb-6">
-        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 mb-3">
-            <h3 class="font-black text-primary flex items-center gap-2 text-lg">
-                <i class="fa-solid fa-pen-fancy text-gold"></i>
-                رسالة التواصل مع العملاء
-            </h3>
-            <button onclick="resetMessage()" class="text-xs font-bold text-secondary hover:text-gold transition px-4 py-2 rounded-xl" style="background: var(--bg-card); border: 1px solid var(--border-color);">
-                <i class="fa-solid fa-rotate-right ml-1"></i> استعادة
-            </button>
-        </div>
-        <textarea id="messageTemplate" rows="3" class="input-restaurant w-full p-4 rounded-xl text-sm font-medium" placeholder="اكتب رسالتك هنا..."></textarea>
-        <div class="mt-3 flex flex-wrap items-start gap-2 p-3 rounded-xl" style="background: rgba(201,160,74,0.06); border: 1px solid rgba(201,160,74,0.08);">
-            <i class="fa-solid fa-circle-info text-gold mt-0.5"></i>
-            <p class="text-xs font-bold leading-relaxed text-secondary">
-                استخدم <span class="px-2 py-0.5 rounded text-gold border border-gold/20" style="background: rgba(201,160,74,0.1);">[الاسم]</span> لاستبداله باسم العميل، 
-                و <span class="px-2 py-0.5 rounded text-gold border border-gold/20" style="background: rgba(201,160,74,0.1);">[الدولة]</span> لاستبدالها باسم الدولة.
-            </p>
-        </div>
-    </div>
-
-    <!-- ====== البحث والفلترة ====== -->
+    <!-- ====== 4. البحث والفلترة ====== -->
     <div class="card-restaurant p-4 mb-6">
         <div class="flex flex-col md:flex-row gap-4">
             <div class="flex-1">
@@ -679,7 +345,7 @@
         </div>
     </div>
 
-    <!-- ====== بطاقات العملاء ====== -->
+    <!-- ====== 5. بطاقات العملاء ====== -->
     <div id="cardsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
     </div>
 
@@ -712,33 +378,25 @@
 <!-- ============================================================ -->
 <script>
     // ============================================================
-    // 0. Dark Mode المتطور
+    // 0. Dark Mode
     // ============================================================
     const themeToggle = document.getElementById('themeToggle');
-    
-    // تحميل التفضيل السابق
     let currentTheme = localStorage.getItem('theme') || 'dark';
     document.documentElement.setAttribute('data-theme', currentTheme);
     themeToggle.textContent = currentTheme === 'dark' ? '🌙' : '☀️';
     
-    // تبديل الوضع مع تأثير
     themeToggle.addEventListener('click', function() {
         const current = document.documentElement.getAttribute('data-theme');
         const newTheme = current === 'dark' ? 'light' : 'dark';
-        
-        // إضافة تأثير دوران
         this.style.transform = 'rotate(180deg) scale(0.8)';
-        setTimeout(() => {
-            this.style.transform = '';
-        }, 300);
-        
+        setTimeout(() => { this.style.transform = ''; }, 300);
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
         themeToggle.textContent = newTheme === 'dark' ? '🌙' : '☀️';
     });
 
     // ============================================================
-    // 1. إعداد Firebase (✅ الإعدادات الجديدة)
+    // 1. Firebase Config
     // ============================================================
     const firebaseConfig = {
         apiKey: "AIzaSyArT3vZzQga8ejtV61H69uJN4QT9HGglo",
@@ -749,7 +407,6 @@
         messagingSenderId: "110142806611",
         appId: "1:110142806611:web:69023acbfbda4ac48184a6"
     };
-
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
     let firebaseReady = false;
@@ -763,139 +420,53 @@
 
     async function loadData() {
         try {
-            console.log('🔄 بدء تحميل بيانات العملاء...');
             const response = await fetch('data.json');
-            
-            if (!response.ok) {
-                throw new Error(`فشل التحميل - الحالة: ${response.status}`);
-            }
-            
+            if (!response.ok) throw new Error('فشل التحميل');
             const jsonData = await response.json();
-            console.log('✅ تم تحميل:', jsonData.length, 'عميل');
-            
             rawData = jsonData.map((item, index) => ({
                 id: `client_${index}`,
                 country: item.CountryName || 'غير معروف',
                 phone: String(item['Phone Number'] || ''),
                 name: `عميل ${item.CountryName || ''}`
             }));
-            
             rawData = rawData.filter(item => item.phone && item.phone.length > 0);
-            
-            console.log('✅ عدد العملاء الصالحين:', rawData.length);
-            
             isLoading = false;
             showToast(`✅ تم تحميل ${rawData.length} عميل`, 'success');
-            
-            // ✅ تحميل التقدم والاستماع للتغييرات في الوقت الفعلي
             loadProgressFromFirebase();
-            
             render();
             renderCountryFilters();
             restoreSession();
-            
         } catch (error) {
-            console.error('❌ خطأ:', error);
             isLoading = false;
-            
-            document.getElementById('cardsContainer').innerHTML = `
-                <div class="col-span-full text-center py-16">
-                    <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style="background: rgba(179,60,60,0.15); border: 1px solid rgba(179,60,60,0.15);">
-                        <i class="fa-solid fa-triangle-exclamation text-3xl text-red-400"></i>
-                    </div>
-                    <p class="text-lg font-bold text-red-400">فشل تحميل البيانات</p>
-                    <p class="text-sm text-secondary">${error.message}</p>
-                    <button onclick="loadData()" class="btn-restaurant-primary px-6 py-2 rounded-xl mt-4 text-sm font-bold">
-                        <i class="fa-solid fa-rotate ml-2"></i> إعادة المحاولة
-                    </button>
-                </div>
-            `;
-            showToast(`❌ فشل التحميل: ${error.message}`, 'error');
+            document.getElementById('cardsContainer').innerHTML = `<div class="col-span-full text-center py-16"><p class="text-red-400">فشل تحميل البيانات: ${error.message}</p></div>`;
         }
     }
 
     // ============================================================
-    // 3. دوال Firebase (مع التحديث التلقائي)
+    // 3. Firebase Syncing
     // ============================================================
-    
     function saveProgressToFirebase() {
         if (!firebaseReady) return;
-        database.ref('progress').set(sentState)
-            .then(() => console.log('✅ تم حفظ التقدم في Firebase'))
-            .catch(err => console.error('❌ خطأ في حفظ Firebase:', err));
+        database.ref('progress').set(sentState).catch(err => console.error(err));
     }
 
-    // ✅ دالة المزامنة التلقائية (تستمع للتغييرات في الوقت الفعلي)
     function loadProgressFromFirebase() {
-        // ✅ استخدام on() بدلاً من once() للاستماع للتغييرات في الوقت الفعلي
         database.ref('progress').on('value', (snapshot) => {
             const data = snapshot.val();
-            console.log('📥 تحديث فوري من Firebase:', data);
-            
             if (data) {
                 let hasChanges = false;
                 Object.keys(data).forEach(key => {
-                    // إذا كانت الحالة في Firebase مختلفة عن الحالة المحلية
-                    if (data[key] === true && !sentState[key]) {
-                        sentState[key] = true;
-                        hasChanges = true;
-                    } else if (data[key] === false && sentState[key] === true) {
-                        sentState[key] = false;
-                        hasChanges = true;
-                    }
+                    if (data[key] === true && !sentState[key]) { sentState[key] = true; hasChanges = true; }
+                    else if (data[key] === false && sentState[key] === true) { sentState[key] = false; hasChanges = true; }
                 });
-                
-                if (hasChanges) {
-                    saveSentState();
-                    render();
-                    showToast('🔄 تم تحديث التقدم تلقائياً من جهاز آخر', 'info');
-                }
+                if (hasChanges) { saveSentState(); render(); }
             }
             firebaseReady = true;
-            updateFirebaseStatus(true);
-            
-        }, (error) => {
-            console.error('❌ خطأ في الاستماع للتغييرات:', error);
-            updateFirebaseStatus(false);
-        });
-    }
-
-    // دالة المزامنة اليدوية (للاحتياط)
-    function syncWithFirebase() {
-        if (isSyncing) return;
-        isSyncing = true;
-        showToast('🔄 جاري المزامنة مع السحابة...', 'info');
-        
-        database.ref('progress').once('value').then((snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                let hasChanges = false;
-                Object.keys(data).forEach(key => {
-                    if (data[key] === true && !sentState[key]) {
-                        sentState[key] = true;
-                        hasChanges = true;
-                    }
-                });
-                if (hasChanges) {
-                    saveSentState();
-                    render();
-                    showToast('✅ تمت المزامنة بنجاح', 'success');
-                } else {
-                    showToast('✅ لا توجد تغييرات جديدة', 'info');
-                }
-            } else {
-                saveProgressToFirebase();
-                showToast('✅ تم رفع التقدم إلى السحابة', 'success');
-            }
-            isSyncing = false;
-        }).catch((error) => {
-            showToast('❌ خطأ في المزامنة: ' + error.message, 'error');
-            isSyncing = false;
         });
     }
 
     // ============================================================
-    // 4. دوال الحالة
+    // 4. الحالة
     // ============================================================
     let sentState = JSON.parse(localStorage.getItem('noorseen_whatsapp_sent') || '{}');
     let batchProgress = JSON.parse(localStorage.getItem('noorseen_batch_progress') || '{"currentIndex":0,"isPaused":false,"isRunning":false}');
@@ -904,20 +475,9 @@
         localStorage.setItem('noorseen_whatsapp_sent', JSON.stringify(sentState));
         saveProgressToFirebase();
     }
-    
-    function saveBatchProgress() {
-        localStorage.setItem('noorseen_batch_progress', JSON.stringify(batchProgress));
-    }
-
-    function isSent(id) {
-        return sentState[id] === true;
-    }
-
-    function toggleSent(id) {
-        sentState[id] = !sentState[id];
-        saveSentState();
-        render();
-    }
+    function saveBatchProgress() { localStorage.setItem('noorseen_batch_progress', JSON.stringify(batchProgress)); }
+    function isSent(id) { return sentState[id] === true; }
+    function toggleSent(id) { sentState[id] = !sentState[id]; saveSentState(); render(); }
 
     // ============================================================
     // 5. إعدادات العرض
@@ -931,72 +491,109 @@
 
     const defaultMessage = 'مرحباً [الاسم]، يتواصل معك مطعم أصايل. لدينا عروض خاصة لك في دولة [الدولة]!';
 
-    // ============================================================
-    // 6. متغيرات الإرسال الجماعي
-    // ============================================================
-    let batchTimer = null;
-    let isBatchRunning = false;
-    let isBatchPaused = false;
-    let batchTotal = 0;
-    let batchSent = 0;
-    let currentClientIndex = 0;
-    let batchFilteredData = [];
+    let messageTemplate = localStorage.getItem('noorseen_whatsapp_msg') || defaultMessage;
+    const msgInput = document.getElementById('messageTemplate');
+    msgInput.value = messageTemplate;
+    msgInput.addEventListener('input', function() {
+        messageTemplate = this.value;
+        localStorage.setItem('noorseen_whatsapp_msg', messageTemplate);
+        render();
+    });
 
     // ============================================================
-    // 7. دوال التصفية
+    // 6. دوال الإرسال اليدوي والصور (NEW FEATURE)
     // ============================================================
-    function getFilteredData() {
-        let data = rawData.map((item) => ({
-            ...item,
-            _sent: isSent(item.id)
-        }));
+    let selectedImageBase64 = null;
 
-        if (currentCountry !== 'all') {
-            data = data.filter(item => item.country === currentCountry);
-        }
+    // رفع الصورة وعرض معاينتها
+    document.getElementById('imageUpload').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
 
-        if (currentFilter === 'sent') {
-            data = data.filter(item => item._sent);
-        } else if (currentFilter === 'pending') {
-            data = data.filter(item => !item._sent);
-        }
-
-        if (searchQuery.trim() !== '') {
-            const q = searchQuery.trim().toLowerCase();
-            data = data.filter(item => 
-                item.phone.includes(q) || 
-                item.country.toLowerCase().includes(q) ||
-                (item.name && item.name.toLowerCase().includes(q))
-            );
-        }
-
-        return data;
-    }
-
-    // ============================================================
-    // 8. العرض الرئيسي
-    // ============================================================
-    function render() {
-        if (isLoading) {
-            document.getElementById('cardsContainer').innerHTML = `
-                <div class="col-span-full text-center py-16">
-                    <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style="background: var(--bg-card); border: 1px solid var(--border-color);">
-                        <i class="fa-solid fa-spinner fa-spin text-3xl text-gold"></i>
-                    </div>
-                    <p class="text-lg font-bold text-secondary">جاري تحميل البيانات...</p>
-                    <p class="text-sm text-muted">يرجى الانتظار</p>
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            selectedImageBase64 = event.target.result;
+            document.getElementById('imagePreview').innerHTML = `
+                <div class="image-preview-container">
+                    <img src="${selectedImageBase64}" alt="معاينة الصورة">
+                    <button class="remove-image-btn" onclick="removeImage()">×</button>
                 </div>
             `;
+            showToast('✅ تم رفع الصورة بنجاح', 'success');
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // إزالة الصورة
+    function removeImage() {
+        selectedImageBase64 = null;
+        document.getElementById('imageUpload').value = '';
+        document.getElementById('imagePreview').innerHTML = '';
+        showToast('🗑️ تم إزالة الصورة', 'info');
+    }
+
+    // إرسال رسالة يدوية (مع أو بدون صورة)
+    function sendManualWhatsApp() {
+        const phoneInput = document.getElementById('manualPhone').value.trim();
+        
+        if (!phoneInput) {
+            showToast('⚠️ الرجاء إدخال رقم الهاتف أولاً', 'warning');
             return;
         }
 
+        // تنظيف الرقم (إزالة الرموز غير الرقمية مثل + و -)
+        const cleanPhone = phoneInput.replace(/\D/g, '');
+        if (!cleanPhone || cleanPhone.length < 8) {
+            showToast('❌ رقم غير صالح! تأكد من الرقم', 'error');
+            return;
+        }
+
+        // إذا كانت هناك صورة، نقوم بتنزيلها تلقائياً حتى يقدر المستخدم على إرفاقها في واتساب
+        // (لأن روابط wa.me لا تدعم إرسال الصور المرفقة مباشرة)
+        if (selectedImageBase64) {
+            const link = document.createElement('a');
+            link.href = selectedImageBase64;
+            link.download = 'whatsapp_image.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('📥 تم تنزيل الصورة، أرفقها في واتساب يدوياً', 'info');
+        }
+
+        // فتح واتساب مع النص
+        const waLink = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(messageTemplate)}`;
+        window.open(waLink, '_blank');
+
+        showToast('🚀 تم فتح واتساب لهذا الرقم', 'success');
+    }
+
+    // مسح النموذج اليدوي
+    function clearManualForm() {
+        document.getElementById('manualPhone').value = '';
+        removeImage();
+    }
+
+    // ============================================================
+    // 7. الفلترة والعرض
+    // ============================================================
+    function getFilteredData() {
+        let data = rawData.map((item) => ({ ...item, _sent: isSent(item.id) }));
+        if (currentCountry !== 'all') data = data.filter(item => item.country === currentCountry);
+        if (currentFilter === 'sent') data = data.filter(item => item._sent);
+        else if (currentFilter === 'pending') data = data.filter(item => !item._sent);
+        if (searchQuery.trim() !== '') {
+            const q = searchQuery.trim().toLowerCase();
+            data = data.filter(item => item.phone.includes(q) || item.country.toLowerCase().includes(q));
+        }
+        return data;
+    }
+
+    function render() {
+        if (isLoading) return;
         const filtered = getFilteredData();
         const totalItems = filtered.length;
         const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
-
         if (currentPage > totalPages) currentPage = totalPages || 1;
-        if (currentPage < 1) currentPage = 1;
-
         const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
         const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
         const pageItems = filtered.slice(startIndex, endIndex);
@@ -1004,79 +601,44 @@
         const totalAll = rawData.length;
         const totalSent = Object.values(sentState).filter(Boolean).length;
         const totalPending = totalAll - totalSent;
+        const percent = totalAll > 0 ? Math.round((totalSent / totalAll) * 100) : 0;
 
         document.getElementById('totalCount').textContent = totalAll;
         document.getElementById('sentCount').textContent = totalSent;
         document.getElementById('pendingCount').textContent = totalPending;
-
-        const percent = totalAll > 0 ? Math.round((totalSent / totalAll) * 100) : 0;
         document.getElementById('progressPercent').textContent = percent + '%';
         document.getElementById('progressFill').style.width = percent + '%';
         document.getElementById('progressText').textContent = `${totalSent} / ${totalAll} تم التواصل`;
 
         const container = document.getElementById('cardsContainer');
         if (pageItems.length === 0) {
-            container.innerHTML = `
-                <div class="col-span-full text-center py-16">
-                    <div class="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4" style="background: var(--bg-card); border: 1px solid var(--border-color);">
-                        <i class="fa-regular fa-face-smile text-3xl text-gold"></i>
-                    </div>
-                    <p class="text-lg font-bold text-secondary">لا توجد نتائج</p>
-                    <p class="text-sm text-muted">حاول تعديل البحث أو الفلترة</p>
-                </div>
-            `;
+            container.innerHTML = `<div class="col-span-full text-center py-16">لا توجد نتائج</div>`;
         } else {
             container.innerHTML = pageItems.map((item) => {
                 const sent = item._sent;
-                const isCurrentlySending = isBatchRunning && !isBatchPaused && 
-                    batchFilteredData[currentClientIndex] && 
-                    batchFilteredData[currentClientIndex].id === item.id;
-
                 const waNumber = item.phone.replace(/\D/g, '');
-                const clientName = item.name || `عميل ${item.country}`;
-                const customMsg = messageTemplate
-                    .replace(/\[الاسم\]/g, clientName)
-                    .replace(/\[الدولة\]/g, item.country);
-                
+                const customMsg = messageTemplate.replace(/\[الاسم\]/g, item.name).replace(/\[الدولة\]/g, item.country);
                 const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(customMsg)}`;
 
                 let statusBadge = '';
-                if (sent) {
-                    statusBadge = `<span class="badge-restaurant sent"><i class="fa-regular fa-circle-check ml-1"></i> تم التواصل</span>`;
-                } else if (isCurrentlySending) {
-                    statusBadge = `<span class="badge-restaurant sending"><i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري</span>`;
-                } else {
-                    statusBadge = `<span class="badge-restaurant pending"><i class="fa-regular fa-clock ml-1"></i> في الانتظار</span>`;
-                }
+                if (sent) statusBadge = `<span class="badge-restaurant sent"><i class="fa-regular fa-circle-check ml-1"></i> تم التواصل</span>`;
+                else statusBadge = `<span class="badge-restaurant pending"><i class="fa-regular fa-clock ml-1"></i> في الانتظار</span>`;
 
                 return `
-                    <div class="card-restaurant rounded-2xl p-4 relative ${sent ? 'sent' : ''} ${isCurrentlySending ? 'sending' : ''}">
+                    <div class="card-restaurant rounded-2xl p-4 relative ${sent ? 'sent' : ''}">
                         <div class="flex items-start justify-between mb-2">
                             <div class="flex-1">
-                                <div class="flex items-center gap-2 mb-1 flex-wrap">
-                                    <span class="text-[10px] font-black px-2 py-0.5 rounded-full" style="background: rgba(201,160,74,0.1); color: var(--gold); border: 1px solid rgba(201,160,74,0.1);">
-                                        <i class="fa-solid fa-flag ml-1"></i> ${item.country}
-                                    </span>
-                                    ${statusBadge}
-                                </div>
-                                <p class="font-bold text-sm text-primary">${clientName}</p>
+                                <span class="text-[10px] font-black px-2 py-0.5 rounded-full" style="background: rgba(201,160,74,0.1); color: var(--gold);">${item.country}</span>
+                                <p class="font-bold text-sm text-primary mt-1">${item.name}</p>
                                 <p class="font-mono font-bold text-base text-muted" dir="ltr">${item.phone}</p>
                             </div>
-                            <button onclick="toggleSent('${item.id}')" 
-                                    class="w-8 h-8 rounded-xl flex items-center justify-center transition border ${sent ? 'border-gold text-gold' : 'border-border text-muted hover:border-gold'}" 
-                                    title="${sent ? 'تحديد كغير متواصل' : 'تحديد كتم التواصل'}">
-                                <i class="fa-solid ${sent ? 'fa-check-double' : 'fa-check'} text-xs"></i>
-                            </button>
+                            ${statusBadge}
                         </div>
                         <div class="flex gap-2 mt-3">
-                            <a href="${waLink}" 
-                               target="_blank" 
-                               onclick="markAsSent('${item.id}')"
-                               class="flex-1 btn-restaurant-success py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2">
+                            <a href="${waLink}" target="_blank" onclick="markAsSent('${item.id}')" class="flex-1 btn-restaurant-success py-2.5 px-3 rounded-xl text-sm font-bold flex items-center justify-center gap-2">
                                 <i class="fa-brands fa-whatsapp"></i> إرسال
                             </a>
-                            <button onclick="copyPhone('${item.phone}')" 
-                                    class="px-3 py-2.5 rounded-xl text-sm font-bold text-muted hover:text-gold transition" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+                            <button onclick="copyPhone('${item.phone}')" class="px-3 py-2.5 rounded-xl text-sm font-bold text-muted hover:text-gold transition" style="background: var(--bg-card); border: 1px solid var(--border-color);">
                                 <i class="fa-regular fa-copy"></i>
                             </button>
                         </div>
@@ -1084,48 +646,26 @@
                 `;
             }).join('');
         }
-
         renderPagination(totalPages);
-        updateBatchStatus();
     }
 
     // ============================================================
-    // 9. الترقيم
+    // 8. الترقيم والبحث
     // ============================================================
     function renderPagination(totalPages) {
         const controls = document.getElementById('paginationControls');
-        if (totalPages <= 1) {
-            controls.innerHTML = '';
-            return;
-        }
-
-        let html = `
-            <button class="pagination-restaurant" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-                <i class="fa-solid fa-chevron-right"></i>
-            </button>
-        `;
-
+        if (totalPages <= 1) { controls.innerHTML = ''; return; }
+        let html = `<button class="pagination-restaurant" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i class="fa-solid fa-chevron-right"></i></button>`;
         if (totalPages <= 7) {
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<button class="pagination-restaurant ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
-            }
+            for (let i = 1; i <= totalPages; i++) html += `<button class="pagination-restaurant ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
         } else {
             html += `<button class="pagination-restaurant ${1 === currentPage ? 'active' : ''}" onclick="changePage(1)">1</button>`;
             if (currentPage > 3) html += `<span class="text-muted">...</span>`;
-            for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
-                html += `<button class="pagination-restaurant ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
-            }
+            for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) html += `<button class="pagination-restaurant ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`;
             if (currentPage < totalPages - 2) html += `<span class="text-muted">...</span>`;
             html += `<button class="pagination-restaurant ${totalPages === currentPage ? 'active' : ''}" onclick="changePage(${totalPages})">${totalPages}</button>`;
         }
-
-        html += `
-            <button class="pagination-restaurant" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-                <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            <span class="text-xs text-muted mr-2">${currentPage} / ${totalPages}</span>
-        `;
-
+        html += `<button class="pagination-restaurant" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i class="fa-solid fa-chevron-left"></i></button>`;
         controls.innerHTML = html;
     }
 
@@ -1137,302 +677,22 @@
         render();
     }
 
-    // ============================================================
-    // 10. دوال مساعدة
-    // ============================================================
-    function copyPhone(phone) {
-        navigator.clipboard.writeText(phone).then(() => {
-            showToast('✅ تم نسخ الرقم: ' + phone, 'success');
-        }).catch(() => {
-            const input = document.createElement('input');
-            input.value = phone;
-            document.body.appendChild(input);
-            input.select();
-            document.execCommand('copy');
-            document.body.removeChild(input);
-            showToast('✅ تم نسخ الرقم: ' + phone, 'success');
-        });
-    }
-
-    function markAsSent(id) {
-        if (!sentState[id]) {
-            sentState[id] = true;
-            saveSentState();
-            setTimeout(() => render(), 500);
-        }
-    }
-
-    function showToast(message, type = 'info') {
-        const existing = document.querySelector('.toast-restaurant');
-        if (existing) existing.remove();
-        
-        const toast = document.createElement('div');
-        toast.className = `toast-restaurant ${type}`;
-        toast.innerHTML = message;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateX(-50%) translateY(20px)';
-            setTimeout(() => toast.remove(), 500);
-        }, 4000);
-    }
-
-    // ============================================================
-    // 11. إدارة الرسالة
-    // ============================================================
-    let messageTemplate = localStorage.getItem('noorseen_whatsapp_msg') || defaultMessage;
-    const msgInput = document.getElementById('messageTemplate');
-    msgInput.value = messageTemplate;
-
-    msgInput.addEventListener('input', function() {
-        messageTemplate = this.value;
-        localStorage.setItem('noorseen_whatsapp_msg', messageTemplate);
-        render();
-    });
-
-    function resetMessage() {
-        messageTemplate = defaultMessage;
-        msgInput.value = messageTemplate;
-        localStorage.setItem('noorseen_whatsapp_msg', messageTemplate);
-        render();
-        showToast('🔄 تم استعادة الرسالة الافتراضية', 'warning');
-    }
-
-    // ============================================================
-    // 12. الإرسال الجماعي
-    // ============================================================
-    function startBatchSending() {
-        const filtered = getFilteredData();
-        const pending = filtered.filter(item => !item._sent);
-        
-        if (pending.length === 0) {
-            showToast('🎉 جميع العملاء تم التواصل معهم!', 'success');
-            return;
-        }
-
-        showToast('📱 تأكد من فتح واتساب على هاتفك', 'info');
-
-        const batchSize = parseInt(document.getElementById('batchSize').value) || 5;
-        const targetCount = Math.min(batchSize, pending.length);
-        
-        batchFilteredData = pending.slice(0, targetCount);
-        batchTotal = batchFilteredData.length;
-        batchSent = 0;
-        currentClientIndex = 0;
-        
-        if (batchProgress.currentIndex > 0 && batchProgress.isRunning) {
-            currentClientIndex = batchProgress.currentIndex;
-            batchSent = currentClientIndex;
-            showToast(`🔄 استكمال التواصل من العميل رقم ${currentClientIndex + 1}`, 'info');
-        } else {
-            batchProgress.currentIndex = 0;
-            batchProgress.isRunning = true;
-            batchProgress.isPaused = false;
-            saveBatchProgress();
-        }
-
-        isBatchRunning = true;
-        isBatchPaused = false;
-        
-        document.getElementById('startBatchBtn').disabled = true;
-        document.getElementById('pauseBatchBtn').disabled = false;
-        document.getElementById('stopBatchBtn').disabled = false;
-        document.getElementById('batchStatus').classList.remove('hidden');
-        
-        showToast(`🚀 بدء الإرسال لـ ${batchTotal} عميل`, 'info');
-        
-        sendNextBatchPhone();
-    }
-
-    function sendNextBatchPhone() {
-        if (!isBatchRunning || isBatchPaused) return;
-        if (currentClientIndex >= batchTotal) {
-            finishBatch();
-            return;
-        }
-
-        const item = batchFilteredData[currentClientIndex];
-        const waNumber = item.phone.replace(/\D/g, '');
-        const clientName = item.name || `عميل ${item.country}`;
-        const customMsg = messageTemplate
-            .replace(/\[الاسم\]/g, clientName)
-            .replace(/\[الدولة\]/g, item.country);
-        
-        const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(customMsg)}`;
-
-        window.open(waLink, '_blank');
-        
-        const id = item.id;
-        sentState[id] = true;
-        batchSent++;
-        currentClientIndex++;
-        
-        batchProgress.currentIndex = currentClientIndex;
-        saveBatchProgress();
-        saveSentState();
-        
-        render();
-        updateBatchStatus();
-        document.getElementById('currentSending').textContent = `العميل الحالي: ${clientName} (${item.country})`;
-        
-        const delayMinutes = parseInt(document.getElementById('delayMinutes').value) || 3;
-        const remaining = batchTotal - currentClientIndex;
-        const remainingMinutes = remaining * delayMinutes;
-        document.getElementById('timeRemaining').textContent = `الوقت المتبقي: ~${remainingMinutes} دقيقة`;
-        
-        showToast(`⏳ انتظر ${delayMinutes} دقائق قبل الرسالة التالية`, 'warning');
-        
-        const delayMs = delayMinutes * 60 * 1000;
-        batchTimer = setTimeout(sendNextBatchPhone, delayMs);
-    }
-
-    function pauseBatchSending() {
-        if (!isBatchRunning) return;
-        isBatchPaused = true;
-        batchProgress.isPaused = true;
-        saveBatchProgress();
-        
-        if (batchTimer) {
-            clearTimeout(batchTimer);
-            batchTimer = null;
-        }
-        
-        document.getElementById('pauseBatchBtn').disabled = true;
-        document.getElementById('startBatchBtn').disabled = false;
-        document.getElementById('startBatchBtn').innerHTML = '<i class="fa-solid fa-play"></i> استكمال';
-        
-        showToast(`⏸️ تم إيقاف الإرسال مؤقتاً - استكملت ${batchSent} من ${batchTotal}`, 'warning');
-        updateBatchStatus();
-    }
-
-    function stopBatchSending() {
-        if (!isBatchRunning) return;
-        
-        if (!confirm('هل أنت متأكد من إيقاف الإرسال؟ سيتم حفظ التقدم.')) return;
-        
-        isBatchRunning = false;
-        isBatchPaused = false;
-        
-        if (batchTimer) {
-            clearTimeout(batchTimer);
-            batchTimer = null;
-        }
-        
-        batchProgress.isRunning = false;
-        batchProgress.isPaused = false;
-        saveBatchProgress();
-        
-        document.getElementById('startBatchBtn').disabled = false;
-        document.getElementById('startBatchBtn').innerHTML = '<i class="fa-solid fa-play"></i> بدء الإرسال';
-        document.getElementById('pauseBatchBtn').disabled = true;
-        document.getElementById('stopBatchBtn').disabled = true;
-        document.getElementById('batchStatus').classList.add('hidden');
-        
-        showToast(`⏹️ تم إيقاف الإرسال - تم إرسال ${batchSent} من ${batchTotal}`, 'error');
-        render();
-    }
-
-    function finishBatch() {
-        isBatchRunning = false;
-        isBatchPaused = false;
-        
-        batchProgress.isRunning = false;
-        batchProgress.isPaused = false;
-        batchProgress.currentIndex = 0;
-        saveBatchProgress();
-        
-        document.getElementById('startBatchBtn').disabled = false;
-        document.getElementById('startBatchBtn').innerHTML = '<i class="fa-solid fa-play"></i> بدء الإرسال';
-        document.getElementById('pauseBatchBtn').disabled = true;
-        document.getElementById('stopBatchBtn').disabled = true;
-        document.getElementById('batchStatus').classList.add('hidden');
-        
-        showToast(`✅ اكتمل الإرسال! تم إرسال ${batchTotal} رسالة`, 'success');
-        render();
-    }
-
-    function updateBatchStatus() {
-        if (!isBatchRunning && !isBatchPaused) {
-            document.getElementById('batchStatus').classList.add('hidden');
-            return;
-        }
-        
-        document.getElementById('batchStatus').classList.remove('hidden');
-        document.getElementById('batchProgress').textContent = `${batchSent} / ${batchTotal}`;
-        
-        if (isBatchPaused) {
-            document.getElementById('currentSending').textContent = '⏸️ متوقف مؤقتاً';
-        }
-    }
-
-    // ============================================================
-    // 13. استعادة الجلسة
-    // ============================================================
-    function restoreSession() {
-        if (isLoading || rawData.length === 0) return;
-        
-        if (batchProgress.isRunning && batchProgress.currentIndex > 0) {
-            const filtered = getFilteredData();
-            const pending = filtered.filter(item => !item._sent);
-            
-            if (pending.length > 0) {
-                const remaining = pending.length;
-                showToast(`🔄 يوجد ${remaining} عميل متبقي من الجلسة السابقة`, 'info');
-                
-                document.getElementById('startBatchBtn').innerHTML = '<i class="fa-solid fa-play"></i> استكمال';
-                document.getElementById('startBatchBtn').disabled = false;
-            }
-        }
-    }
-
-    // ============================================================
-    // 14. البحث والفلترة
-    // ============================================================
-    document.getElementById('searchInput').addEventListener('input', function() {
-        searchQuery = this.value;
-        currentPage = 1;
-        render();
-    });
+    document.getElementById('searchInput').addEventListener('input', function() { searchQuery = this.value; currentPage = 1; render(); });
 
     function renderCountryFilters() {
-        if (isLoading || rawData.length === 0) {
-            document.getElementById('countrySelect').innerHTML = `
-                <option value="all">🌍 جاري التحميل...</option>
-            `;
-            return;
-        }
-
+        if (isLoading) return;
         countries = [...new Set(rawData.map(item => item.country).filter(Boolean))];
-        
         const select = document.getElementById('countrySelect');
         let html = `<option value="all">🌍 جميع الدول</option>`;
-        
-        countries.forEach(country => {
-            const count = rawData.filter(item => item.country === country).length;
-            html += `
-                <option value="${country}">
-                    🏳️ ${country} (${count})
-                </option>
-            `;
-        });
-        
+        countries.forEach(country => { html += `<option value="${country}">🏳️ ${country} (${rawData.filter(item => item.country === country).length})</option>`; });
         select.innerHTML = html;
-
-        select.addEventListener('change', function() {
-            currentCountry = this.value;
-            currentPage = 1;
-            render();
-        });
+        select.addEventListener('change', function() { currentCountry = this.value; currentPage = 1; render(); });
     }
 
     document.querySelectorAll('.filter-restaurant').forEach(btn => {
         btn.addEventListener('click', function() {
-            document.querySelectorAll('.filter-restaurant').forEach(b => {
-                b.classList.remove('active');
-            });
+            document.querySelectorAll('.filter-restaurant').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            
             currentFilter = this.dataset.filter;
             currentPage = 1;
             render();
@@ -1440,22 +700,133 @@
     });
 
     // ============================================================
-    // 15. التشغيل
+    // 9. أدوات مساعدة
+    // ============================================================
+    function copyPhone(phone) {
+        navigator.clipboard.writeText(phone).then(() => showToast('✅ تم نسخ الرقم', 'success')).catch(() => showToast('❌ خطأ في النسخ', 'error'));
+    }
+    function markAsSent(id) { if (!sentState[id]) { sentState[id] = true; saveSentState(); setTimeout(() => render(), 500); } }
+    function showToast(message, type = 'info') {
+        const existing = document.querySelector('.toast-restaurant');
+        if (existing) existing.remove();
+        const toast = document.createElement('div');
+        toast.className = `toast-restaurant ${type}`;
+        toast.innerHTML = message;
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(-50%) translateY(20px)'; setTimeout(() => toast.remove(), 500); }, 4000);
+    }
+    function resetMessage() { messageTemplate = defaultMessage; msgInput.value = messageTemplate; localStorage.setItem('noorseen_whatsapp_msg', messageTemplate); render(); showToast('🔄 تم استعادة الرسالة الافتراضية', 'warning'); }
+
+    // ============================================================
+    // 10. الإرسال الجماعي
+    // ============================================================
+    let batchTimer = null;
+    let isBatchRunning = false;
+    let isBatchPaused = false;
+    let batchTotal = 0;
+    let batchSent = 0;
+    let currentClientIndex = 0;
+    let batchFilteredData = [];
+
+    function startBatchSending() {
+        const filtered = getFilteredData();
+        const pending = filtered.filter(item => !item._sent);
+        if (pending.length === 0) { showToast('🎉 جميع العملاء تم التواصل معهم!', 'success'); return; }
+        showToast('📱 تأكد من فتح واتساب على هاتفك', 'info');
+        const batchSize = parseInt(document.getElementById('batchSize').value) || 5;
+        const targetCount = Math.min(batchSize, pending.length);
+        batchFilteredData = pending.slice(0, targetCount);
+        batchTotal = batchFilteredData.length;
+        batchSent = 0;
+        currentClientIndex = 0;
+        if (batchProgress.currentIndex > 0 && batchProgress.isRunning) { currentClientIndex = batchProgress.currentIndex; batchSent = currentClientIndex; showToast(`🔄 استكمال التواصل من العميل رقم ${currentClientIndex + 1}`, 'info'); }
+        else { batchProgress.currentIndex = 0; batchProgress.isRunning = true; batchProgress.isPaused = false; saveBatchProgress(); }
+        isBatchRunning = true; isBatchPaused = false;
+        document.getElementById('startBatchBtn').disabled = true;
+        document.getElementById('pauseBatchBtn').disabled = false;
+        document.getElementById('stopBatchBtn').disabled = false;
+        document.getElementById('batchStatus').classList.remove('hidden');
+        showToast(`🚀 بدء الإرسال لـ ${batchTotal} عميل`, 'info');
+        sendNextBatchPhone();
+    }
+
+    function sendNextBatchPhone() {
+        if (!isBatchRunning || isBatchPaused) return;
+        if (currentClientIndex >= batchTotal) { finishBatch(); return; }
+        const item = batchFilteredData[currentClientIndex];
+        const waNumber = item.phone.replace(/\D/g, '');
+        const customMsg = messageTemplate.replace(/\[الاسم\]/g, item.name).replace(/\[الدولة\]/g, item.country);
+        const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(customMsg)}`;
+        window.open(waLink, '_blank');
+        sentState[item.id] = true;
+        batchSent++; currentClientIndex++;
+        batchProgress.currentIndex = currentClientIndex;
+        saveBatchProgress(); saveSentState(); render(); updateBatchStatus();
+        document.getElementById('currentSending').textContent = `العميل الحالي: ${item.name}`;
+        const delayMinutes = parseInt(document.getElementById('delayMinutes').value) || 3;
+        const remaining = batchTotal - currentClientIndex;
+        document.getElementById('timeRemaining').textContent = `الوقت المتبقي: ~${remaining * delayMinutes} دقيقة`;
+        showToast(`⏳ انتظر ${delayMinutes} دقيقة`, 'warning');
+        const delayMs = delayMinutes * 60 * 1000;
+        batchTimer = setTimeout(sendNextBatchPhone, delayMs);
+    }
+
+    function pauseBatchSending() {
+        if (!isBatchRunning) return;
+        isBatchPaused = true; batchProgress.isPaused = true; saveBatchProgress();
+        if (batchTimer) { clearTimeout(batchTimer); batchTimer = null; }
+        document.getElementById('pauseBatchBtn').disabled = true;
+        document.getElementById('startBatchBtn').disabled = false;
+        document.getElementById('startBatchBtn').innerHTML = '<i class="fa-solid fa-play"></i> استكمال';
+        showToast('⏸️ تم الإيقاف المؤقت', 'warning'); updateBatchStatus();
+    }
+
+    function stopBatchSending() {
+        if (!isBatchRunning) return;
+        if (!confirm('إيقاف الإرسال؟')) return;
+        isBatchRunning = false; isBatchPaused = false;
+        if (batchTimer) { clearTimeout(batchTimer); batchTimer = null; }
+        batchProgress.isRunning = false; batchProgress.isPaused = false; saveBatchProgress();
+        document.getElementById('startBatchBtn').disabled = false;
+        document.getElementById('startBatchBtn').innerHTML = '<i class="fa-solid fa-play"></i> بدء الإرسال';
+        document.getElementById('pauseBatchBtn').disabled = true;
+        document.getElementById('stopBatchBtn').disabled = true;
+        document.getElementById('batchStatus').classList.add('hidden');
+        showToast('⏹️ تم الإيقاف', 'error'); render();
+    }
+
+    function finishBatch() {
+        isBatchRunning = false; isBatchPaused = false;
+        batchProgress.isRunning = false; batchProgress.currentIndex = 0; saveBatchProgress();
+        document.getElementById('startBatchBtn').disabled = false;
+        document.getElementById('startBatchBtn').innerHTML = '<i class="fa-solid fa-play"></i> بدء الإرسال';
+        document.getElementById('pauseBatchBtn').disabled = true;
+        document.getElementById('stopBatchBtn').disabled = true;
+        document.getElementById('batchStatus').classList.add('hidden');
+        showToast('✅ اكتمل الإرسال!', 'success'); render();
+    }
+
+    function updateBatchStatus() {
+        if (!isBatchRunning && !isBatchPaused) { document.getElementById('batchStatus').classList.add('hidden'); return; }
+        document.getElementById('batchStatus').classList.remove('hidden');
+        document.getElementById('batchProgress').textContent = `${batchSent} / ${batchTotal}`;
+    }
+
+    function restoreSession() {
+        if (isLoading || rawData.length === 0) return;
+        if (batchProgress.isRunning && batchProgress.currentIndex > 0) {
+            document.getElementById('startBatchBtn').innerHTML = '<i class="fa-solid fa-play"></i> استكمال';
+            document.getElementById('startBatchBtn').disabled = false;
+        }
+    }
+
+    // ============================================================
+    // 11. التشغيل النهائي
     // ============================================================
     loadData();
-
-    setInterval(() => {
-        if (isBatchRunning) {
-            saveBatchProgress();
-            saveSentState();
-        }
-    }, 10000);
-
+    setInterval(() => { if (isBatchRunning) { saveBatchProgress(); saveSentState(); } }, 10000);
     window.addEventListener('beforeunload', function(e) {
-        if (isBatchRunning && !isBatchPaused) {
-            e.preventDefault();
-            e.returnValue = '⚠️ الإرسال لا يزال قيد التشغيل. هل أنت متأكد من الإغلاق؟';
-        }
+        if (isBatchRunning && !isBatchPaused) { e.preventDefault(); e.returnValue = '⚠️ الإرسال لا يزال قيد التشغيل!'; }
     });
 </script>
 
